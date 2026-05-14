@@ -31,7 +31,7 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen bg-transparent text-white flex items-center justify-center">
-      <div className="w-full max-w-md bg-zinc-900 p-8 rounded-3xl border border-zinc-800">
+      <div className="w-full max-w-md bg-black/10 backdrop-blur-md p-8 rounded-3xl border border-zinc-800">
         <h1 className="text-4xl font-black mb-2">
           Join Comicore
         </h1>
