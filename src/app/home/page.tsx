@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-transparent text-white">
-      <Navbar />
+     
 
       <div className="p-10">
         <h1 className="text-5xl font-black mb-4">
