@@ -34,10 +34,10 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center">
+    <main className="min-h-screen bg-transparent text-white flex items-center justify-center">
       <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
         <h1 className="text-4xl font-black mb-2">
-          Comicore
+          ComiCore
         </h1>
 
         <p className="text-zinc-400 mb-8">
