@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,7 +23,9 @@ export default function LoginPage() {
 
       console.log("Logged in:", userCredential.user);
 
-      alert("Login successful!");
+      
+
+      router.push("/home");
     } catch (error: any) {
       console.error(error.message);
 
@@ -45,7 +50,7 @@ export default function LoginPage() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-black border border-zinc-700 px-4 py-3 rounded-2xl"
+            className="w-full bg-black border border-zinc-700 px-4 py-3 rounded-2xl outline-none"
           />
 
           <input
@@ -53,10 +58,13 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-black border border-zinc-700 px-4 py-3 rounded-2xl"
+            className="w-full bg-black border border-zinc-700 px-4 py-3 rounded-2xl outline-none"
           />
 
-          <button className="w-full bg-white text-black py-3 rounded-2xl font-bold">
+          <button
+            type="submit"
+            className="w-full bg-white text-black py-3 rounded-2xl font-bold hover:scale-[1.02] transition"
+          >
             Login
           </button>
         </form>
