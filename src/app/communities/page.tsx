@@ -29,6 +29,13 @@ type Community = {
   description: string;
   members: number;
   banner: string;
+  createdBy: string;
+};
+
+type Post = {
+  id: string;
+  text: string;
+  username: string;
 };
 
 export default function CommunitiesPage() {
