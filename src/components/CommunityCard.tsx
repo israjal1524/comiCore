@@ -1,8 +1,10 @@
-// src/components/CommunityCard.tsx
+"use client";
+
+import { useRouter } from "next/navigation";
 
 type CommunityProps = {
   community: {
-    id: number;
+    id: string;
     name: string;
     description: string;
     members: number;
@@ -13,22 +15,36 @@ type CommunityProps = {
 export default function CommunityCard({
   community,
 }: CommunityProps) {
+
+  const router = useRouter();
+
   return (
-    <div className="bg-zinc-900 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-all duration-300">
+    <div
+      onClick={() =>
+        router.push(`/communities/${community.id}`)
+      }
+      className="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-red-700 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+    >
 
       <img
         src={community.banner}
         alt={community.name}
-        className="w-full h-44 object-cover"
+        className="w-full h-52 object-cover"
       />
 
       <div className="p-5">
 
-        <h2 className="text-2xl font-bold text-white">
-          {community.name}
-        </h2>
+        <div className="flex items-center justify-between">
 
-        <p className="text-zinc-400 mt-3 text-sm leading-relaxed">
+          <h2 className="text-2xl font-bold text-white">
+            {community.name}
+          </h2>
+
+          <div className="w-3 h-3 rounded-full bg-green-500" />
+
+        </div>
+
+        <p className="text-zinc-400 mt-3 leading-relaxed text-sm">
           {community.description}
         </p>
 
@@ -38,7 +54,10 @@ export default function CommunityCard({
             {community.members} members
           </span>
 
-          <button className="bg-violet-600 hover:bg-violet-700 px-5 py-2 rounded-xl text-white font-semibold transition">
+          <button
+            onClick={(e) => e.stopPropagation()}
+            className="bg-red-800 hover:bg-red-700 px-5 py-2 rounded-xl text-white font-semibold transition-all duration-300"
+          >
             Join
           </button>
 
