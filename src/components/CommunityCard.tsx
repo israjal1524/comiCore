@@ -1,34 +1,50 @@
-type Props = {
-  name: string;
-  description: string;
-  members: string;
+// src/components/CommunityCard.tsx
+
+type CommunityProps = {
+  community: {
+    id: number;
+    name: string;
+    description: string;
+    members: number;
+    banner: string;
+  };
 };
 
 export default function CommunityCard({
-  name,
-  description,
-  members,
-}: Props) {
+  community,
+}: CommunityProps) {
   return (
-    <div className="bg-black/60 backdrop-blur-lg border border-red-900 rounded-3xl p-6 hover:scale-[1.02] transition duration-300 shadow-xl">
-      
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-black text-white">
-          {name}
+    <div className="bg-zinc-900 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition-all duration-300">
+
+      <img
+        src={community.banner}
+        alt={community.name}
+        className="w-full h-44 object-cover"
+      />
+
+      <div className="p-5">
+
+        <h2 className="text-2xl font-bold text-white">
+          {community.name}
         </h2>
 
-        <span className="text-xs bg-red-900/60 px-3 py-1 rounded-full text-zinc-300">
-          {members}
-        </span>
+        <p className="text-zinc-400 mt-3 text-sm leading-relaxed">
+          {community.description}
+        </p>
+
+        <div className="flex justify-between items-center mt-6">
+
+          <span className="text-zinc-500 text-sm">
+            {community.members} members
+          </span>
+
+          <button className="bg-violet-600 hover:bg-violet-700 px-5 py-2 rounded-xl text-white font-semibold transition">
+            Join
+          </button>
+
+        </div>
+
       </div>
-
-      <p className="text-zinc-400 mb-6 leading-relaxed">
-        {description}
-      </p>
-
-      <button className="w-full bg-red-800 hover:bg-red-700 text-white py-3 rounded-2xl font-bold transition">
-        Join Community
-      </button>
     </div>
   );
 }
