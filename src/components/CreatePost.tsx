@@ -51,12 +51,17 @@ export default function CreatePost({
         await addDoc(
           collection(db, "posts"),
           {
+
             communityId,
 
             text: trimmedText,
 
             createdBy:
               auth.currentUser?.uid,
+
+            username:
+              auth.currentUser?.displayName ||
+              "anonymous",
 
             createdAt:
               Timestamp.now(),
