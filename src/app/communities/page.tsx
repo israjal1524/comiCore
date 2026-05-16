@@ -1,12 +1,21 @@
-// src/app/communities/page.tsx
-
 "use client";
 
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 
-import { onAuthStateChanged, User } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  User,
+} from "firebase/auth";
 
-import { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+} from "firebase/firestore";
+
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -14,33 +23,82 @@ import CommunityCard from "@/components/CommunityCard";
 
 import CreateCommunityModal from "@/components/communityModal";
 
+type Community = {
+  id: string;
+  name: string;
+  description: string;
+  members: number;
+  banner: string;
+};
+
 export default function CommunitiesPage() {
 
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] =
+    useState<User | null>(null);
 
   const [loading, setLoading] = useState(true);
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] =
+    useState(false);
 
+  const [communities, setCommunities] =
+    useState<Community[]>([]);
+
+  // FETCH COMMUNITIES
+  const fetchCommunities = async () => {
+
+    try {
+
+      const querySnapshot = await getDocs(
+        collection(db, "communities")
+      );
+
+      const fetchedCommunities: Community[] =
+        [];
+
+      querySnapshot.forEach((doc) => {
+
+        fetchedCommunities.push({
+          id: doc.id,
+          ...doc.data(),
+        } as Community);
+
+      });
+
+      setCommunities(fetchedCommunities);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+  };
+
+  // AUTH CHECK
   useEffect(() => {
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (currentUser) => {
 
-      if (!currentUser) {
+        if (!currentUser) {
 
-        router.push("/login");
+          router.push("/login");
 
-      } else {
+        } else {
 
-        setUser(currentUser);
+          setUser(currentUser);
+
+          fetchCommunities();
+
+        }
+
+        setLoading(false);
 
       }
-
-      setLoading(false);
-
-    });
+    );
 
     return () => unsubscribe();
 
@@ -57,38 +115,6 @@ export default function CommunitiesPage() {
   if (!user) {
     return null;
   }
-
-  const communities = [
-    {
-      id: 1,
-      name: "Meme Lords",
-      description:
-        "Daily memes, cursed humor and pure internet chaos.",
-      members: 1200,
-      banner:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
-    },
-
-    {
-      id: 2,
-      name: "Coding Chaos",
-      description:
-        "Developers crying over bugs together.",
-      members: 980,
-      banner:
-        "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
-    },
-
-    {
-      id: 3,
-      name: "Cinema Cult",
-      description:
-        "Movies, fan theories and binge addiction.",
-      members: 2100,
-      banner:
-        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
-    },
-  ];
 
   return (
     <main className="min-h-screen px-8 py-10">
@@ -110,7 +136,7 @@ export default function CommunitiesPage() {
 
           </div>
 
-          {/* CREATE COMMUNITY BUTTON */}
+          {/* BUTTON */}
           <button
             onClick={() => setShowModal(true)}
             className="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-2xl text-white font-semibold transition"
@@ -120,7 +146,7 @@ export default function CommunitiesPage() {
 
         </div>
 
-        {/* COMMUNITY GRID */}
+        {/* GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {communities.map((community) => (
@@ -137,7 +163,11 @@ export default function CommunitiesPage() {
       {/* MODAL */}
       {showModal && (
         <CreateCommunityModal
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+
+            fetchCommunities();
+          }}
         />
       )}
 

@@ -2,6 +2,14 @@
 
 import { useState } from "react";
 
+import { db, auth } from "@/lib/firebase";
+
+import {
+  collection,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
+
 type Props = {
   onClose: () => void;
 };
@@ -14,14 +22,44 @@ export default function CreateCommunityModal({
 
   const [description, setDescription] = useState("");
 
-  const handleCreateCommunity = () => {
+  const [loading, setLoading] = useState(false);
 
-    console.log({
-      communityName,
-      description,
-    });
+  const handleCreateCommunity = async () => {
 
-    onClose();
+    if (!communityName || !description) return;
+
+    try {
+
+      setLoading(true);
+
+      await addDoc(collection(db, "communities"), {
+
+        name: communityName,
+
+        description: description,
+
+        members: 1,
+
+        banner:
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+
+        createdBy: auth.currentUser?.uid,
+
+        createdAt: Timestamp.now(),
+
+      });
+
+      onClose();
+
+    } catch (error) {
+
+      console.error(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
   };
 
   return (
@@ -29,7 +67,6 @@ export default function CreateCommunityModal({
 
       <div className="w-full max-w-lg bg-zinc-950 border border-red-900/40 rounded-3xl p-8 relative">
 
-        {/* CLOSE BUTTON */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-zinc-400 hover:text-white text-xl"
@@ -37,7 +74,6 @@ export default function CreateCommunityModal({
           ✕
         </button>
 
-        {/* TITLE */}
         <h1 className="text-3xl font-black text-white">
           Create Community
         </h1>
@@ -46,10 +82,8 @@ export default function CreateCommunityModal({
           Build your own chaos space.
         </p>
 
-        {/* FORM */}
         <div className="flex flex-col gap-5 mt-8">
 
-          {/* COMMUNITY NAME */}
           <input
             type="text"
             placeholder="Community Name"
@@ -60,7 +94,6 @@ export default function CreateCommunityModal({
             className="bg-zinc-900 border border-zinc-800 focus:border-red-700 rounded-2xl px-5 py-4 text-white outline-none"
           />
 
-          {/* DESCRIPTION */}
           <textarea
             placeholder="Community Description"
             value={description}
@@ -70,12 +103,14 @@ export default function CreateCommunityModal({
             className="bg-zinc-900 border border-zinc-800 focus:border-red-700 rounded-2xl px-5 py-4 text-white outline-none resize-none h-32"
           />
 
-          {/* CREATE BUTTON */}
           <button
             onClick={handleCreateCommunity}
-            className="bg-red-800 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition"
+            disabled={loading}
+            className="bg-red-800 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition disabled:opacity-50"
           >
-            Create Community
+            {loading
+              ? "Creating..."
+              : "Create Community"}
           </button>
 
         </div>
