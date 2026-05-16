@@ -1,3 +1,5 @@
+// src/app/communities/page.tsx
+
 "use client";
 
 import { auth } from "@/lib/firebase";
@@ -10,6 +12,8 @@ import { useRouter } from "next/navigation";
 
 import CommunityCard from "@/components/CommunityCard";
 
+import CreateCommunityModal from "@/components/communityModal";
+
 export default function CommunitiesPage() {
 
   const router = useRouter();
@@ -17,6 +21,8 @@ export default function CommunitiesPage() {
   const [user, setUser] = useState<User | null>(null);
 
   const [loading, setLoading] = useState(true);
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
 
@@ -89,6 +95,7 @@ export default function CommunitiesPage() {
 
       <div className="max-w-7xl mx-auto">
 
+        {/* HEADER */}
         <div className="flex justify-between items-center mb-12">
 
           <div>
@@ -103,14 +110,17 @@ export default function CommunitiesPage() {
 
           </div>
 
-          <button className="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-2xl text-white font-semibold transition">
-
+          {/* CREATE COMMUNITY BUTTON */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-red-800 hover:bg-red-700 px-6 py-3 rounded-2xl text-white font-semibold transition"
+          >
             Create Community
-
           </button>
 
         </div>
 
+        {/* COMMUNITY GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {communities.map((community) => (
@@ -123,6 +133,13 @@ export default function CommunitiesPage() {
         </div>
 
       </div>
+
+      {/* MODAL */}
+      {showModal && (
+        <CreateCommunityModal
+          onClose={() => setShowModal(false)}
+        />
+      )}
 
     </main>
   );
